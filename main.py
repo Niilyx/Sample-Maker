@@ -25,7 +25,7 @@ def create_audio_file(decimals_list, output_filename):
     )
 
     # Export the audio segment to a WAV file
-    audio_segment.export(output_filename, format="wav")
+    audio_segment.export(output_filename, format=format)
 
 def f(x):
     # lengthener = 0.1 # The tinier the value the longer the sample
@@ -34,7 +34,7 @@ def f(x):
     # pulse1 = .6
     # amplitude2 = -1.3
     # pulse2 = 1
-    lengthener = 0.3
+    lengthener = 0.01
     common_amp = 1
     amplitude1 = 3.5
     pulse1 = 1
@@ -42,9 +42,15 @@ def f(x):
     pulse2 = 1
     return common_amp * amplitude1 * math.sin(lengthener * pulse1 * x + common_amp * amplitude2 * math.sin(lengthener * pulse2 * x))
 
-try:
-    os.remove("output.wav")
-except FileNotFoundError:
-    pass
-decimals = [f(x) for x in range(50*157)]
-create_audio_file(decimals, "output.wav")
+
+decimals = [f(x) for x in range(50000)]
+
+
+format = "wav"
+
+if os.path.exists(f"output.{format}"):
+    i = 1
+    while os.path.exists(f"output{i}.{format}"): i += 1
+    create_audio_file(decimals, f"output{i}.{format}")
+else:
+    create_audio_file(decimals, f"output.{format}")
